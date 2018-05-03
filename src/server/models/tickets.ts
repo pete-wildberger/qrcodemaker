@@ -1,11 +1,11 @@
 import {db, db_type} from './connection.js';
 
-export interface TicketModel_type{
+export interface TicketsModel_type{
   db:db_type;
   create():any
 }
 
-export class TicketModel {
+export class TicketsModel {
   public db:db_type;
   constructor(){
     this.db = new db();

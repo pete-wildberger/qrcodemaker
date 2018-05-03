@@ -1,17 +1,17 @@
 import { Request, Response } from 'express';
-import { TicketModel, TicketModel_type } from '../models/tickets';
+import { TicketsModel, TicketsModel_type } from '../models/tickets';
 import { qrcoder } from '../utils/qrcoder';
 
 export interface TicketsHandler_type {
-  tm: TicketModel_type;
+  tm: TicketsModel_type;
   all(req: Request, res: Response): any
   create(req: Request, res: Response):any
 }
 
 export class TicketsHandler {
-  public tm: TicketModel_type;
+  public tm: TicketsModel_type;
   constructor() {
-    this.tm = new TicketModel();
+    this.tm = new TicketsModel();
   }
   all(req: Request, res: Response): any {
     res.send('woohoo');

@@ -15,5 +15,5 @@
   },
   "compileOnSave": true,
   "exclude": [],
-  "include": ["./src/server/app.ts", "./src/client/main.ts"]
+  "include": ["./src/server/**/*.ts"]
 }

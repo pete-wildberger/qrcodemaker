@@ -4,15 +4,27 @@ const ts = require('gulp-typescript');
 const tsProject = ts.createProject('tsconfig.json');
 const source = require('vinyl-source-stream');
 const tsify = require('tsify');
+const del = require('del');
 const paths = {
   pages: ['src/client/*.html']
 };
+
+gulp.task('clean', (done) => {
+  del.sync([ 'dist/*' ])
+  done()
+})
 
 gulp.task('copy-html', () => {
   return gulp.src(paths.pages).pipe(gulp.dest('dist'));
 });
 
-gulp.task('default', ['copy-html'], () => {
+gulp.task('server', () => {
+  return tsProject.src()
+    .pipe(tsProject())
+    .js.pipe(gulp.dest("dist"));
+});
+
+gulp.task('default', ['clean','copy-html', 'server'], () => {
   return browserify({
     basedir: '.',
     debug: true,
