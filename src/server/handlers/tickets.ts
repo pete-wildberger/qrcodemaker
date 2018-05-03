@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { TicketModel, TicketModel_type } from '../models/tickets';
+import { qrcoder } from '../utils/qrcoder';
 
 export interface TicketsHandler_type {
   tm: TicketModel_type;
