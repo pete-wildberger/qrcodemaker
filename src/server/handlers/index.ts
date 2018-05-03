@@ -1,6 +1,8 @@
-import TicketsHandler from './tickets';
+import { TicketsHandler, TicketsHandler_type } from './tickets';
 
-const handlers = {
-  tickets: new TicketsHandler()
+export interface handlers_type {
+  tickets:TicketsHandler_type;
+}
+export const handlers:handlers_type = {
+  tickets: new TicketsHandler() as TicketsHandler_type
 };
-export default handlers;
