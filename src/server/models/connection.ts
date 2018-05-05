@@ -6,7 +6,8 @@ import * as pg from 'pg';
 // });
 const config = {
   host: 'localhost',
-  database: 'tickets'
+  port: 5432,
+  database: 'qrcodes'
 };
 
-export const pool = new pg.Pool(this.config);
+export const pool = new pg.Pool(config);

@@ -3362,6 +3362,10 @@ to-through@^2.0.0:
   dependencies:
     through2 "^2.0.3"
 
+ts-md5@^1.2.4:
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/ts-md5/-/ts-md5-1.2.4.tgz#7030d7ba9134449deedf6f609d4b4509b94a5712"
+
 tsconfig@^5.0.3:
   version "5.0.3"
   resolved "https://registry.yarnpkg.com/tsconfig/-/tsconfig-5.0.3.tgz#5f4278e701800967a8fc383fd19648878f2a6e3a"

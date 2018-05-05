@@ -44,10 +44,10 @@ export class Model<model_type> {
           done();
           return reject(err);
         }
-
-        client.query('SELECT * FROM $1', [this.table], (err, result) => {
+        client.query(`SELECT * FROM ${this.table}`, (err, result) => {
           done();
           if (err) {
+            console.log(err);
             reject(err);
           }
           resolve(result.rows);

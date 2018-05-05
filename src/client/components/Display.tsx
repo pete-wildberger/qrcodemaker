@@ -7,25 +7,30 @@ import Footer from './Footer';
 
 interface state_type {
   isFetching: boolean;
+  tickets: string;
 }
 class Display extends React.Component {
   state: state_type;
   constructor(props: any) {
     super(props);
     this.state = {
-      isFetching: true
+      isFetching: true,
+      tickets: ''
     };
-    // this.getShows = this.getShows.bind(this);
+    this.getTickets = this.getTickets.bind(this);
     // this.testNo = this.testNo.bind(this);
   }
 
-  getShows() {
-    axios.get('/events').then(data => {
-      this.setState({ shows: data.data, isFetching: false });
+  getTickets() {
+    axios.get('/api/tickets/').then(data => {
+      this.setState({ tickets: data.data, isFetching: false });
+      console.log(this.state);
     });
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    this.getTickets();
+  }
   render() {
     if (this.state.isFetching == true) {
       return (
@@ -37,7 +42,9 @@ class Display extends React.Component {
       return (
         <div className="app">
           <Header />
-          <div className="body">{}</div>
+          <div className="body">
+            <img src={this.state.tickets} />
+          </div>
           <Footer />
         </div>
       );
