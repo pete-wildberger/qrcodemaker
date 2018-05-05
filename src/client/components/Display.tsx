@@ -7,7 +7,7 @@ import Footer from './Footer';
 
 interface state_type {
   isFetching: boolean;
-  tickets: string;
+  ticket: any;
 }
 class Display extends React.Component {
   state: state_type;
@@ -15,19 +15,31 @@ class Display extends React.Component {
     super(props);
     this.state = {
       isFetching: true,
-      tickets: ''
+      ticket: {}
     };
     this.getTickets = this.getTickets.bind(this);
-    // this.testNo = this.testNo.bind(this);
+    this.makeTicket = this.makeTicket.bind(this);
   }
 
   getTickets() {
     axios.get('/api/tickets/').then(data => {
-      this.setState({ tickets: data.data, isFetching: false });
+      this.setState({ ticket: data.data, isFetching: false });
       console.log(this.state);
     });
   }
-
+  makeTicket(ticket: any) {
+    return (
+      <div>
+        <h2>ID</h2>
+        <p>{ticket.num}</p>
+        <h2>ROW</h2>
+        <p>{ticket.row}</p>
+        <h2>SEAT</h2>
+        <p>{ticket.seat}</p>
+        <img src={ticket.code} />
+      </div>
+    );
+  }
   componentDidMount() {
     this.getTickets();
   }
@@ -42,9 +54,7 @@ class Display extends React.Component {
       return (
         <div className="app">
           <Header />
-          <div className="body">
-            <img src={this.state.tickets} />
-          </div>
+          <div className="body">{this.makeTicket(this.state.ticket)}</div>
           <Footer />
         </div>
       );

@@ -27,7 +27,13 @@ export class TicketsHandler {
         if (err) {
           console.log(err);
         }
-        res.send(url);
+        const ticket = {
+          num: data[0].id,
+          row: data[0].aisle,
+          seat: data[0].seat,
+          code: url
+        };
+        res.send(ticket);
       });
     });
   };
