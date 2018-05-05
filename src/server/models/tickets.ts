@@ -1,25 +1,23 @@
-import { db, db_type } from './connection.js';
+import * as pg from 'pg';
+import { Model, model_type } from './model.class';
+import { pool } from './connection';
 
 export interface TicketsModel_type {
-  table: string;
-  db: db_type;
-  create(): any;
+  newObj(): any;
   remove(id: number): any;
 }
 
-export class TicketsModel {
-  public db: db_type;
-  public table: string;
-  constructor() {
-    this.db = new db();
-    this.table = 'tickets';
+export class TicketsModel extends Model<model_type> {
+  constructor(pool: pg.Pool, table: string) {
+    super(pool, table);
+    this.table = table;
   }
-  create(): any {
+  newObj(): any {
     let query = 'INSERT INTO tickets(row, seat) VALUES($1, $2) RETURNING *';
     let params = [1, 2];
-    return this.db.request(query, params);
+    return this.request(query, params);
   }
   remove(id: number): any {
-    return this.db.remove_by_id(this.table, id);
+    return this.destroy_by_id(id);
   }
 }
