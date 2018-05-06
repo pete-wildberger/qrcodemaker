@@ -1,4 +1,5 @@
 const gulp = require('gulp');
+const sass = require('gulp-sass');
 const browserify = require('browserify');
 const ts = require('gulp-typescript');
 const tsProject = ts.createProject('tsconfig.json');
@@ -14,6 +15,13 @@ gulp.task('clean', done => {
   done();
 });
 
+gulp.task('sass', () => {
+  return gulp
+    .src('src/client/assets/sass/*.scss')
+    .pipe(sass({ outputStyle: 'compressed' }).on('error', sass.logError))
+    .pipe(gulp.dest('dist/assets/css'));
+});
+
 gulp.task('copy-html', () => {
   return gulp.src(paths.pages).pipe(gulp.dest('dist'));
 });
@@ -25,7 +33,7 @@ gulp.task('server', () => {
     .js.pipe(gulp.dest('dist'));
 });
 
-gulp.task('default', ['clean', 'copy-html', 'server'], () => {
+gulp.task('default', ['clean', 'copy-html', 'sass', 'server'], () => {
   return browserify({
     basedir: '.',
     debug: true,
@@ -37,4 +45,8 @@ gulp.task('default', ['clean', 'copy-html', 'server'], () => {
     .bundle()
     .pipe(source('bundle.js'))
     .pipe(gulp.dest('dist'));
+});
+
+gulp.task('sass:watch', () => {
+  gulp.watch('src/client/assets/sass/*.scss', ['sass']);
 });

@@ -4,6 +4,7 @@ import * as moment from 'moment';
 import { Link } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
+import Ticket from './Ticket';
 
 interface state_type {
   isFetching: boolean;
@@ -28,15 +29,17 @@ class Display extends React.Component {
     });
   }
   makeTicket(ticket: any) {
+    console.log(ticket);
     return (
-      <div>
-        <h2>ID</h2>
-        <p>{ticket.num}</p>
-        <h2>ROW</h2>
-        <p>{ticket.row}</p>
-        <h2>SEAT</h2>
-        <p>{ticket.seat}</p>
-        <img src={ticket.code} />
+      <div className="row border">
+        <div className="col-3">
+          <img src={ticket.code} />
+        </div>
+        <div className="col-9">
+          <p>TICKET # {ticket.num}</p>
+          <p>ROW: {ticket.row}</p>
+          <p>SEAT: {ticket.seat}</p>
+        </div>
       </div>
     );
   }
@@ -54,7 +57,7 @@ class Display extends React.Component {
       return (
         <div className="app">
           <Header />
-          <div className="body">{this.makeTicket(this.state.ticket)}</div>
+          {this.makeTicket(this.state.ticket)}
           <Footer />
         </div>
       );
