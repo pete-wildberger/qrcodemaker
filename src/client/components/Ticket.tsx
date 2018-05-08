@@ -7,7 +7,11 @@ const Ticket = (props: any) => {
       <div className="col-3">
         <img src={props.code} />
       </div>
-      <div />
+      <div>
+        <p>TICKET # {props.num}</p>
+        <p>ROW: {props.row}</p>
+        <p>SEAT: {props.seat}</p>
+      </div>
     </div>
   );
 };

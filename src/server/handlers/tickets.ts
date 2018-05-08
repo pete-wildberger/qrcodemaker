@@ -21,19 +21,26 @@ export class TicketsHandler {
   }
 
   all = (req: Request, res: Response): any => {
+    let tickets: any[] = [];
     this.tm.find_all().then((data: any[]) => {
-      let hash: string = this.md5.hashStr(data[0]) as string;
-      this.QRCode.toDataURL(hash, (err, url) => {
-        if (err) {
-          console.log(err);
-        }
-        const ticket = {
-          num: data[0].id,
-          row: data[0].aisle,
-          seat: data[0].seat,
-          code: url
-        };
-        res.send(ticket);
+      const len = data.length;
+      data.forEach(seat => {
+        let hash: string = this.md5.hashStr(seat) as string;
+        this.QRCode.toDataURL(hash, (err, url) => {
+          if (err) {
+            console.log(err);
+          }
+          let ticket = {
+            num: seat.id,
+            row: seat.aisle,
+            seat: seat.seat,
+            code: url
+          };
+          tickets.push(ticket);
+          if (tickets.length === len) {
+            res.send(tickets);
+          }
+        });
       });
     });
   };

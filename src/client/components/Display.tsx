@@ -8,7 +8,7 @@ import Ticket from './Ticket';
 
 interface state_type {
   isFetching: boolean;
-  ticket: any;
+  tickets: any;
 }
 class Display extends React.Component {
   state: state_type;
@@ -16,32 +16,34 @@ class Display extends React.Component {
     super(props);
     this.state = {
       isFetching: true,
-      ticket: {}
+      tickets: []
     };
     this.getTickets = this.getTickets.bind(this);
-    this.makeTicket = this.makeTicket.bind(this);
+    this.makeTickets = this.makeTickets.bind(this);
   }
 
   getTickets() {
     axios.get('/api/tickets/').then(data => {
-      this.setState({ ticket: data.data, isFetching: false });
+      this.setState({ tickets: data.data, isFetching: false });
       console.log(this.state);
     });
   }
-  makeTicket(ticket: any) {
-    console.log(ticket);
-    return (
-      <div className="row border">
-        <div className="col-3">
-          <img src={ticket.code} />
+  makeTickets(tickets: any) {
+    console.log(tickets);
+    return tickets.map((ticket: any) => {
+      return (
+        <div className="row border" key={ticket.num}>
+          <div className="col-3">
+            <img src={ticket.code} />
+          </div>
+          <div className="col-9">
+            <p>TICKET # {ticket.num}</p>
+            <p>ROW: {ticket.row}</p>
+            <p>SEAT: {ticket.seat}</p>
+          </div>
         </div>
-        <div className="col-9">
-          <p>TICKET # {ticket.num}</p>
-          <p>ROW: {ticket.row}</p>
-          <p>SEAT: {ticket.seat}</p>
-        </div>
-      </div>
-    );
+      );
+    });
   }
   componentDidMount() {
     this.getTickets();
@@ -53,12 +55,18 @@ class Display extends React.Component {
           <img className="center-img" src="https://media.giphy.com/media/26BRA7WJEcn7yJy3C/giphy.gif" alt="Loading" />
         </div>
       );
-    } else {
+    } else if (this.state.tickets.length > 0) {
       return (
         <div className="app">
           <Header />
-          {this.makeTicket(this.state.ticket)}
+          {this.makeTickets(this.state.tickets)}
           <Footer />
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <img className="center-img" src="https://media.giphy.com/media/26BRA7WJEcn7yJy3C/giphy.gif" alt="Loading" />
         </div>
       );
     }
