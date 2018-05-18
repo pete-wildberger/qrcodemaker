@@ -32,7 +32,7 @@ class Display extends React.Component {
     console.log(tickets);
     return tickets.map((ticket: any) => {
       return (
-        <div className="row border" key={ticket.num}>
+        <div className="row border ticket-margin" key={ticket.num}>
           <div className="col-3">
             <img src={ticket.code} />
           </div>
