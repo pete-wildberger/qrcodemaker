@@ -21,13 +21,13 @@ export class TicketsHandler {
   }
 
   all = (req: Request, res: Response): any => {
-    let asyncFunction = (seat: any, cb: Function) => {
-      let hash: string = this.md5.hashStr(JSON.stringify(seat)) as string;
+    const asyncFunction = (seat: any, cb: Function) => {
+      const hash: string = this.md5.hashStr(JSON.stringify(seat)) as string;
       this.QRCode.toDataURL(hash, (err, url) => {
         if (err) {
           console.log(err);
         }
-        let ticket = {
+        const ticket = {
           num: seat.id,
           row: seat.aisle,
           seat: seat.seat,
@@ -36,9 +36,8 @@ export class TicketsHandler {
         cb(ticket);
       });
     };
-    let tickets: any[] = [];
     this.tm.find_all().then((data: any[]) => {
-      let requests = data.map(item => {
+      const requests = data.map(item => {
         return new Promise(resolve => {
           asyncFunction(item, resolve);
         });
