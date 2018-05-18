@@ -21,27 +21,29 @@ export class TicketsHandler {
   }
 
   all = (req: Request, res: Response): any => {
+    let asyncFunction = (seat: any, cb: Function) => {
+      let hash: string = this.md5.hashStr(JSON.stringify(seat)) as string;
+      this.QRCode.toDataURL(hash, (err, url) => {
+        if (err) {
+          console.log(err);
+        }
+        let ticket = {
+          num: seat.id,
+          row: seat.aisle,
+          seat: seat.seat,
+          code: url
+        };
+        cb(ticket);
+      });
+    };
     let tickets: any[] = [];
     this.tm.find_all().then((data: any[]) => {
-      const len = data.length;
-      data.forEach(seat => {
-        let hash: string = this.md5.hashStr(seat) as string;
-        this.QRCode.toDataURL(hash, (err, url) => {
-          if (err) {
-            console.log(err);
-          }
-          let ticket = {
-            num: seat.id,
-            row: seat.aisle,
-            seat: seat.seat,
-            code: url
-          };
-          tickets.push(ticket);
-          if (tickets.length === len) {
-            res.send(tickets);
-          }
+      let requests = data.map(item => {
+        return new Promise(resolve => {
+          asyncFunction(item, resolve);
         });
       });
+      Promise.all(requests).then(reqs => res.send(reqs));
     });
   };
   // get_by_id(req: Request, res: Response) {}
