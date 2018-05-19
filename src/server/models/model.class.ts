@@ -65,13 +65,43 @@ export class Model<model_type> {
           done();
           return reject(err);
         }
-
         client.query('SELECT * FROM $1 WHERE id=$2', [this.table, id], (err, result) => {
           done();
           if (err) {
             reject(err);
           }
           resolve(result.rows);
+        });
+      });
+    });
+  };
+  bulk_insert = (entries: any[]): Promise<any> => {
+    const props: string[] = Object.keys(entries[0]);
+    let count: number = 1;
+    let values: any[] = [];
+    let inserts: string[] = [];
+    entries.forEach(entry => {
+      let blings: string[] = [];
+      for (let prop in entry) {
+        values.push(entry[prop]);
+        blings.push('$' + count);
+        count++;
+      }
+      inserts.push(`(${blings.join(',')})`);
+    });
+    const db_query = `INSERT INTO ${this.table} (${props.join(',')}) VALUES ${inserts.join(',')} RETURNING *`;
+    return new Promise((resolve, reject) => {
+      this.pool.connect((err, client, done) => {
+        if (err) {
+          done();
+          return reject(err);
+        }
+        client.query(db_query, values, (err, result) => {
+          done();
+          if (err) {
+            reject(err);
+          }
+          resolve(result);
         });
       });
     });
@@ -87,7 +117,7 @@ export class Model<model_type> {
       blings.push('$' + count);
       count++;
     }
-    const db_query = `INSERT INTO ${this.table} (${props.join(',')})VALUES (${blings.join(',')}) RETURNING *`;
+    const db_query = `INSERT INTO ${this.table} (${props.join(',')}) VALUES (${blings.join(',')}) RETURNING *`;
     return new Promise((resolve, reject) => {
       this.pool.connect((err, client, done) => {
         if (err) {
