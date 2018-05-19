@@ -21,7 +21,7 @@ export class TicketsHandler {
   }
 
   all = (req: Request, res: Response): any => {
-    const asyncFunction = (seat: any, cb: Function) => {
+    const makeTicket = (seat: any, cb: Function) => {
       const hash: string = this.md5.hashStr(JSON.stringify(seat)) as string;
       this.QRCode.toDataURL(hash, (err, url) => {
         if (err) {
@@ -39,7 +39,7 @@ export class TicketsHandler {
     this.tm.find_all().then((data: any[]) => {
       const requests = data.map(item => {
         return new Promise(resolve => {
-          asyncFunction(item, resolve);
+          makeTicket(item, resolve);
         });
       });
       Promise.all(requests).then(reqs => res.send(reqs));

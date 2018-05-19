@@ -6,10 +6,12 @@ import * as pg from 'pg';
 export interface model_type {
   pool: pg.Pool;
   table: string;
-  request(sql_query: string, params: any[]): any;
-  find_all(): any;
-  find_by_id(id: number): any;
-  destroy_by_id(id: number): any;
+  request(sql_query: string, params: any[]): Promise<any>;
+  find_all(): Promise<any>;
+  find_by_id(id: number): Promise<any>;
+  destroy_by_id(id: number): Promise<any>;
+  single_insert(entry: any): Promise<any>;
+  single_update(entry: any, id: number): Promise<any>;
 }
 export class Model<model_type> {
   public pool: pg.Pool;
@@ -19,7 +21,7 @@ export class Model<model_type> {
     this.table = table;
   }
 
-  request = (sql_query: string, params: any[]) => {
+  request = (sql_query: string, params: any[]): Promise<any> => {
     return new Promise((resolve, reject) => {
       this.pool.connect((err, client, done) => {
         if (err) {
@@ -37,7 +39,7 @@ export class Model<model_type> {
     });
   };
 
-  find_all = () => {
+  find_all = (): Promise<any> => {
     return new Promise((resolve, reject) => {
       this.pool.connect((err, client, done) => {
         if (err) {
@@ -56,7 +58,7 @@ export class Model<model_type> {
     });
   };
 
-  find_by_id = (id: number) => {
+  find_by_id = (id: number): Promise<any> => {
     return new Promise((resolve, reject) => {
       this.pool.connect((err, client, done) => {
         if (err) {
@@ -74,8 +76,61 @@ export class Model<model_type> {
       });
     });
   };
-
-  destroy_by_id = (id: number): any => {
+  single_insert = (entry: any): Promise<any> => {
+    let blings: string[] = [];
+    let count: number = 1;
+    let values: any[] = [];
+    let props: string[] = [];
+    for (let prop in entry) {
+      values.push(entry[prop]);
+      props.push(prop);
+      blings.push('$' + count);
+      count++;
+    }
+    const db_query = `INSERT INTO ${this.table} (${props.join(',')})VALUES (${blings.join(',')}) RETURNING *`;
+    return new Promise((resolve, reject) => {
+      this.pool.connect((err, client, done) => {
+        if (err) {
+          done();
+          return reject(err);
+        }
+        client.query(db_query, values, (err, result) => {
+          done();
+          if (err) {
+            reject(err);
+          }
+          resolve(result);
+        });
+      });
+    });
+  };
+  single_update = (entry: any, id: number): Promise<any> => {
+    let count: number = 1;
+    let values: any[] = [];
+    let updates: string[] = [];
+    for (let prop in entry) {
+      values.push(entry[prop]);
+      updates.push(`${prop} =` + '$' + count);
+      count++;
+    }
+    const db_query = `UPDATE ${this.table} SET (${updates.join(',')}) RETURNING * WHERE id = ${id}`;
+    return new Promise((resolve, reject) => {
+      this.pool.connect((err, client, done) => {
+        if (err) {
+          done();
+          return reject(err);
+        }
+        client.query(db_query, values, (err, result) => {
+          done();
+          if (err) {
+            reject(err);
+          }
+          resolve(result);
+        });
+      });
+    });
+  };
+  destroy_by_id = (id: number): Promise<any> => {
     return new Promise((resolve, reject) => {
       this.pool.connect((err, client, done) => {
         if (err) {

@@ -13,9 +13,9 @@ export class TicketsModel extends Model<model_type> {
     this.table = table;
   }
   newObj(): any {
-    let query = 'INSERT INTO tickets(row, seat) VALUES($1, $2) RETURNING *';
-    let params = [1, 2];
-    return this.request(query, params);
+    // let query = 'INSERT INTO tickets(row, seat) VALUES($1, $2) RETURNING *';
+    let params = { seat: 5, aisle: 5 };
+    return this.single_insert(params);
   }
   remove(id: number): any {
     return this.destroy_by_id(id);
