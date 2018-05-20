@@ -75,7 +75,8 @@ export class Model<model_type> {
       });
     });
   };
-  bulk_insert = (entries: any[]): Promise<any> => {
+  bulk_insert = (entries: any[]): any => {
+    console.log('hit');
     const props: string[] = Object.keys(entries[0]);
     let count: number = 1;
     let values: any[] = [];
@@ -90,6 +91,7 @@ export class Model<model_type> {
       inserts.push(`(${blings.join(',')})`);
     });
     const db_query = `INSERT INTO ${this.table} (${props.join(',')}) VALUES ${inserts.join(',')} RETURNING *`;
+    console.log(db_query);
     return new Promise((resolve, reject) => {
       this.pool.connect((err, client, done) => {
         if (err) {

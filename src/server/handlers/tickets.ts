@@ -10,6 +10,7 @@ export interface TicketsHandler_type {
   md5: any;
   all(req: Request, res: Response): any;
   create(req: Request, res: Response): any;
+  create_many(req: Request, res: Response): any;
 }
 
 export class TicketsHandler {
@@ -48,6 +49,12 @@ export class TicketsHandler {
   // get_by_id(req: Request, res: Response) {}
   create = (req: Request, res: Response): any => {
     this.tm.newObj().then((data: any) => {
+      res.send('woohoo');
+    });
+  };
+  create_many = (req: Request, res: Response): any => {
+    console.log('many');
+    this.tm.newObjs().then((data: any) => {
       res.send('woohoo');
     });
   };
