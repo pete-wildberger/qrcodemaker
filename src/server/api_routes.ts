@@ -1,17 +1,26 @@
 import * as express from 'express';
 import * as path from 'path';
 import * as bodyParser from 'body-parser';
-import { handlers } from './handlers';
+import { Tickets } from './handlers/';
 
-const api = express.Router();
-const tickets = express.Router();
+class Router {
+	public api: express.Router;
+	constructor() {
+		this.api = express.Router();
+		this.middleware();
+		this.routes();
+	}
+	private middleware() {
+		this.api.use(bodyParser.json());
+	}
+	private routes() {
+		const tickets = express.Router();
+		// tickets.get('/:id', handlers.tickets.get_by_id);
+		tickets.get('/', Tickets.all);
+		tickets.post('/', Tickets.create);
+		tickets.post('/more', Tickets.create_many);
+		this.api.use('/tickets', tickets);
+	}
+}
 
-api.use(bodyParser.json());
-
-// tickets.get('/:id', handlers.tickets.get_by_id);
-tickets.get('/', handlers.tickets.all);
-tickets.post('/', handlers.tickets.create);
-tickets.post('/more', handlers.tickets.create_many);
-api.use('/tickets', tickets);
-
-export default api;
+export default new Router().api;
